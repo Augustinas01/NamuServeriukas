@@ -1,6 +1,6 @@
 ﻿
 using Contracts.Factorio;
-using Domain.Entities.General;
+using Domain.Entities.Factorio;
 using Domain.Repositories;
 using Services.Abstractions.Factorio;
 
@@ -20,10 +20,11 @@ namespace Services
             throw new NotImplementedException();
         }
         public async Task<int> StartSession()
+        
         {
-            var session = new GameSession() { StartTimestamp = DateTime.Now };
+            var session = new FactorioSession() { StartTimestamp = DateTime.UtcNow };
 
-            _repositoryManager.GameSessionRepository.Insert(session);
+            _repositoryManager.FactorioRepository.InsertSession(session);
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync();
 
@@ -33,9 +34,10 @@ namespace Services
 
         public async Task StopSession(int sessionId)
         {
-            var session = await _repositoryManager.GameSessionRepository.GetSessionByIdAsync(sessionId) ?? throw new Exception("Sesija nerasta");
 
-            session.StopTimestamp = DateTime.Now;
+            var session = await _repositoryManager.FactorioRepository.GetSessionByIdAsync(sessionId) ?? throw new Exception("Nerasta sesija");
+
+            session.StopTimestamp = DateTime.UtcNow;
 
             await _repositoryManager.UnitOfWork.SaveChangesAsync();
 

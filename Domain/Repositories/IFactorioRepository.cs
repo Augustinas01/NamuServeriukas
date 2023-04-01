@@ -3,7 +3,9 @@ using Domain.Repositories.General;
 
 namespace Domain.Repositories
 {
-    public interface IFactorioRepository : IPlayerRepository<FactorioPlayer>
+    public interface IFactorioRepository : 
+        IPlayerRepository<FactorioPlayer>,
+        IGameSessionRepository<FactorioSession, FactorioPlayer>
     {
     }
 }

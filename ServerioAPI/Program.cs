@@ -2,6 +2,14 @@ using DataAccessLayer.Context;
 using ServerioAPI.Interfaces;
 using ServerioAPI.Services;
 using ServerioAPI.Services.Information;
+using Services.Abstractions;
+using Services;
+using Domain.Repositories;
+using PostgresDatabase.Repositories;
+using PostgresDatabase.Contexts;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -9,6 +17,15 @@ var builder = WebApplication.CreateBuilder();
 
 builder.Services.AddScoped<IProcessService, ProcessService>();
 builder.Services.AddScoped<IGamesService, GamesInfoService>();
+
+builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddDbContext<FactorioDbContext>(builder =>
+{
+    var conString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("Postgres");
+    builder.UseNpgsql(conString, x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "efcore"));
+
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

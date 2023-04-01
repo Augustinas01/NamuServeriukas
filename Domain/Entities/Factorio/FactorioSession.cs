@@ -2,7 +2,6 @@
 
 namespace Domain.Entities.Factorio
 {
-    public class FactorioPlayer : Player
-    {
-    }
+    public class FactorioSession : GameSession
+    {}
 }

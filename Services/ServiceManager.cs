@@ -5,7 +5,7 @@ using Services.Abstractions.Factorio;
 
 namespace Services
 {
-    internal class ServiceManager : IServiceManager
+    public class ServiceManager : IServiceManager
     {
         private readonly Lazy<IFactorioService> _lazyFactorioService;
 

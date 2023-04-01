@@ -1,12 +1,14 @@
-﻿using Domain.Entities.General;
+﻿using Domain.Entities.Generic;
 
 namespace Domain.Repositories.General
 {
-    public interface IGameSessionRepository
+    public interface IGameSessionRepository<Gs, Pl> 
+        where Gs : class
+        where Pl : class
     {
-        Task<IEnumerable<GameSession>> GetAllSessionsAsync();
-        Task<GameSession> GetSessionByIdAsync(int id);
-        Task<IEnumerable<Player>> GetAllPlayersBySessionIdAsync(int id);
-        void Insert(GameSession session);
+        Task<IEnumerable<Gs>> GetAllSessionsAsync();
+        Task<Gs> GetSessionByIdAsync(int id);
+        Task<IEnumerable<Pl>> GetAllPlayersBySessionIdAsync(int id);
+        void InsertSession(Gs session);
     }
 }

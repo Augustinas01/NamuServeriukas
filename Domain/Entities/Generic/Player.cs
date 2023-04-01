@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities.General
+﻿namespace Domain.Entities.Generic
 {
     public class Player
     {
@@ -8,7 +8,6 @@
 
         public DateTime? LeaveTimestamp { get; set; }
         public int? SessionId { get; set; }
-
-        public virtual Session? Session { get; set; }
+        public virtual GameSession? Session { get; set; }
     }
 }

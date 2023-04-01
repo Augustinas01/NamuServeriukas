@@ -4,6 +4,7 @@ using DataAccessLayer.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ServerioAPI.Interfaces;
+using Services.Abstractions;
 
 namespace ServerioAPI.Controllers
 {
@@ -13,12 +14,15 @@ namespace ServerioAPI.Controllers
     {
         private readonly ILogger<FactorioController> _logger;
         private readonly IProcessService _processService;
+        private readonly IServiceManager _serviceManager;
 
         public FactorioController(IProcessService processService,
-                                  ILogger<FactorioController> logger)
+                                  ILogger<FactorioController> logger,
+                                  IServiceManager serviceManager)
         {
             _logger = logger;
             _processService = processService;
+            _serviceManager = serviceManager;
         }
 
         [HttpGet("start")]
@@ -78,6 +82,35 @@ namespace ServerioAPI.Controllers
             catch
             {
                 return StatusCode(500, $"Error getting game info");
+            }
+        }
+
+        [HttpGet("test-start")]
+        public async Task<IActionResult> Test()
+        {
+            try
+            {
+                var id = await _serviceManager.FactorioService.StartSession();
+                return Ok(id);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("test-stop")]
+        public async Task<IActionResult> TestStop()
+        {
+            try
+            {
+                await _serviceManager.FactorioService.StopSession(1);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
 

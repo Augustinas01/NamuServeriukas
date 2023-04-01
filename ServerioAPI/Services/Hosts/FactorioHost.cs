@@ -29,7 +29,7 @@
                     scope.ServiceProvider
                         .GetRequiredService<ProcessService>();
 
-                await scopedProcessingService.Start();
+                scopedProcessingService.Start();
             }
         }
         public override async Task StopAsync(CancellationToken stoppingToken)
