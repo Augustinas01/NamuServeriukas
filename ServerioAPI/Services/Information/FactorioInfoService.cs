@@ -1,9 +1,9 @@
 ﻿
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using BusinessLayer.Enumerators.Factorio;
-using BusinessLayer.Models;
-using BusinessLayer.Models.Output.Factorio;
+using Enums.Enumerators.Factorio;
+using Enums.Models;
+using Enums.Models.Output.Factorio;
 using ServerioAPI.Interfaces;
 using ServerioAPI.Utilities;
 
@@ -13,7 +13,7 @@ namespace ServerioAPI.Services.Information
     {
         private bool _serverOnline;
         private string _serverState = "offline";
-        private GameModel _game = new() { Name = "Factorio", PlayerList = new() };
+        private GameModel _game = new() { Name = "Facades", PlayerList = new() };
 
         public void SetServerStatus(bool online) 
         {

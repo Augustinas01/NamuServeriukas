@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Models;
+﻿using Enums.Models;
 using ServerioAPI.Interfaces;
 
 namespace ServerioAPI.Services.Information

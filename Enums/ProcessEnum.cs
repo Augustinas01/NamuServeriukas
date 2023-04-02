@@ -1,4 +1,4 @@
-﻿namespace Enums.Enumerators
+﻿namespace Enums
 {
     public class ProcessEnum
     {
@@ -8,6 +8,6 @@
             Undefined,
             Factorio
         }
-
+        
     }
 }

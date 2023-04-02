@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Enums.Models
+namespace ExternalProcesses.Models
 {
     public class PlayerModel
     {

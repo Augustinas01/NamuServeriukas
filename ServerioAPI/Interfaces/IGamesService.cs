@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Models;
+﻿using Enums.Models;
 
 namespace ServerioAPI.Interfaces
 {

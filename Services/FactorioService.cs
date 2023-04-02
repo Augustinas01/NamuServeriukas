@@ -2,7 +2,7 @@
 using Contracts.Factorio;
 using Domain.Entities.Factorio;
 using Domain.Repositories;
-using Services.Abstractions.Factorio;
+using Services.Abstractions.Facades;
 
 namespace Services
 {

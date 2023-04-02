@@ -1,7 +1,7 @@
 ﻿
 using Domain.Repositories;
 using Services.Abstractions;
-using Services.Abstractions.Factorio;
+using Services.Abstractions.Facades;
 
 namespace Services
 {

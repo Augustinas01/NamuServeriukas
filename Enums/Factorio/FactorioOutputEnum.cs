@@ -1,4 +1,4 @@
-﻿namespace Enums.Enumerators.Factorio
+﻿namespace Enums.Factorio
 {
     public class FactorioOutputEnum
     {

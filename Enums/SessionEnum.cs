@@ -1,5 +1,5 @@
 ﻿
-namespace Enums.Enumerators
+namespace Enums
 {
     public class SessionEnum
     {

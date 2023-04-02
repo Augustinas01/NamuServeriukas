@@ -1,5 +1,5 @@
-﻿using BusinessLayer.Enumerators;
-using BusinessLayer.Models;
+﻿using Enums.Enumerators;
+using Enums.Models;
 using DataAccessLayer.Context;
 using DataAccessLayer.Dapper.Database;
 using Microsoft.EntityFrameworkCore;

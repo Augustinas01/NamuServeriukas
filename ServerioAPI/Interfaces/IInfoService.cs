@@ -1,4 +1,4 @@
-﻿using BusinessLayer.Models;
+﻿using Enums.Models;
 using System.Diagnostics;
 
 namespace ServerioAPI.Interfaces

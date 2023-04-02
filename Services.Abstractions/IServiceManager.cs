@@ -1,4 +1,4 @@
-﻿using Services.Abstractions.Factorio;
+﻿using Services.Abstractions.Facades;
 
 namespace Services.Abstractions
 {
