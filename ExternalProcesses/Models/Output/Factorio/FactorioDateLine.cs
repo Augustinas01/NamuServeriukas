@@ -1,5 +1,5 @@
 ﻿
-using Enums.Enumerators.Factorio;
+using Enums.Factorio;
 
 namespace Enums.Models.Output.Factorio
 {

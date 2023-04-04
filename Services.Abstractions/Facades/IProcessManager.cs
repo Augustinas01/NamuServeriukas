@@ -1,8 +1,9 @@
-﻿using Services.Abstractions.Generic;
+﻿using Microsoft.Extensions.Hosting;
+using Services.Abstractions.Generic;
 
 namespace Services.Abstractions.Facades
 {
-    public interface IProcessManager : IProcessHandler
+    public interface IProcessManager : IProcessHandler, IHostedService
     {
     }
 }

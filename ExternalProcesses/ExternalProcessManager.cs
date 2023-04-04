@@ -1,12 +1,11 @@
 ﻿using Enums;
-using ExternalProcesses.Handlers;
 using ExternalProcesses.Models;
 using Services.Abstractions.Facades;
 using System.Diagnostics;
 
 namespace ExternalProcesses
 {
-    internal class ExternalProcessManager : IProcessManager
+    public class ExternalProcessManager : IProcessManager
     {
         private readonly Dictionary<ProcessEnum.Type, GameServer> _processes = new();
 
@@ -34,7 +33,9 @@ namespace ExternalProcesses
                 case ProcessEnum.Type.Factorio:
                     try
                     {
-                       StartExternalProcess("path", "args");
+                       StartExternalProcess
+                            ("D:\\grajokas\\Factorio.v1.1.76\\Factorio.v1.1.76\\Factorio.v1.1.76\\bin\\x64\\factorio.exe",
+                           "--start-server-load-latest --server-settings C:\\server\\games\\Factorio\\data\\server-settings.json");
                     }
                     catch
                     {
@@ -61,20 +62,32 @@ namespace ExternalProcesses
             };
 
             var prc = new GameServer();
-            prc.Start(startInfo);
+            prc.StartInfo = startInfo;
+            prc.Start();
+            prc.BeginOutputReadLine();
 
             _processes.Add(ProcessEnum.Type.Factorio, prc);
 
             return Task.CompletedTask;
         }
 
-        public Task StopExternalProcess(ProcessEnum.Type prcType) =>
-            StopExternalProcess("path");
-
-        public Task StopExternalProcess(string filePath)
+        public async Task<int> StopExternalProcess(ProcessEnum.Type prcType)
         {
-            throw new NotImplementedException();
+            var prcId = _processes[prcType].GetServerId();
+            await _processes[prcType].WaitForExitAsync();
+
+            _processes[prcType].Kill();
+            _processes[prcType].Dispose();
+            _processes.Remove(prcType);
+
+            return prcId;
         }
+
+        public void SetGameId(ProcessEnum.Type prcType, int id)
+        {
+            _processes[prcType].SetServerId(id);
+        }
+
 
 
     }

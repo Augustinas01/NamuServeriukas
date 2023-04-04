@@ -1,38 +1,44 @@
-using DataAccessLayer.Context;
-using ServerioAPI.Interfaces;
-using ServerioAPI.Services;
-using ServerioAPI.Services.Information;
 using Services.Abstractions;
 using Services;
 using Domain.Repositories;
 using PostgresDatabase.Repositories;
 using PostgresDatabase.Contexts;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Services.Abstractions.Facades;
+using ExternalProcesses;
 
 var builder = WebApplication.CreateBuilder();
+#if DEBUG
+var conString = builder.Configuration.GetConnectionString("MyPostgres");
+#else
+var conString = builder.Configuration.GetConnectionString("Postgres");
+#endif
+Console.WriteLine(conString);
 
 // Add services to the container
+builder.Services.AddHostedService<ExternalProcessManager>();
+builder.Services.AddTransient<IProcessService, ProcessService>();
 
-builder.Services.AddScoped<IProcessService, ProcessService>();
-builder.Services.AddScoped<IGamesService, GamesInfoService>();
-
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddScoped<IServiceManager, ServiceManager>();
+
 builder.Services.AddDbContext<FactorioDbContext>(builder =>
 {
-    var conString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("Postgres");
+    //var conString = new ConfigurationBuilder()
+    //                                    .AddJsonFile("appsettings.json")
+    //                                    .Build()
+    //                                    .GetConnectionString("Postgres");
     builder.UseNpgsql(conString, x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "efcore"));
 
 });
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<PostgresContext>();
 
 var app = builder.Build();
 

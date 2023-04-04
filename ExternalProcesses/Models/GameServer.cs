@@ -9,7 +9,7 @@ namespace ExternalProcesses.Models
     public class GameServer : Process
     {
         public ProcessEnum.Type Type { get; set; }
-        public GameModel? Model { get; set; }
+        private GameModel Model { get; set; } = new();
         private ProcessOutputHandler ProcessOutputHandler { get; set; }
 
         public GameServer() 
@@ -20,12 +20,11 @@ namespace ExternalProcesses.Models
             ProcessOutputHandler.PlayerAction += o_PlayerDidAction;
         }
 
-        public void Start(ProcessStartInfo startInfo)
+        public void SetServerId(int id)
         {
-
-            base.Start();
-            base.BeginOutputReadLine();
+            Model.Id = id;
         }
+        public int GetServerId() => Model.Id;
 
         private void o_ServerDidAction(object sender, ServerStateChangedEventArgs e)
         {

@@ -3,9 +3,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace Services.Abstractions.Generic
 {
-    public interface IProcessHandler : IHostedService
+    public interface IProcessHandler 
     {
         Task StartExternalProcess(ProcessEnum.Type processType);
-        Task StopExternalProcess(ProcessEnum.Type processType);
+        Task<int> StopExternalProcess(ProcessEnum.Type processType);
     }
 }
