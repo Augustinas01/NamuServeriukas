@@ -1,4 +1,4 @@
-﻿namespace BusinessLayer.Enumerators
+﻿namespace Enums.Enumerators
 {
     public class ProcessEnum
     {

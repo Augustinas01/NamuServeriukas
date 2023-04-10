@@ -1,4 +1,4 @@
-﻿namespace BusinessLayer.Models
+﻿namespace Enums.Models
 {
     public class ServerInfo
     {

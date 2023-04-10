@@ -5,7 +5,7 @@ import { useState,useEffect } from 'react';
 function ServerControlGrid() {
     let [data, setData]= useState([]);
     useEffect(() => {
-        fetch(settings.API.GAMES + '/list')
+        fetch(settings.API.SERVICE + '/list')
             .then((response) => response.json())
             .then((data) => setData(data));
 
@@ -14,7 +14,7 @@ function ServerControlGrid() {
         <div className="container mt-3">
             <div className="tile is-ancestor">
                 <div className="tile is-parent">
-                    {data.map(game => <ServerControlTile key={game.id} name={game.name} state={game.state} /> ) }
+                    {data.map(service => <ServerControlTile key={service.id} name={service.name} state={service.state} serviceId={service.id} />)}
 
                 </div>
             </div>

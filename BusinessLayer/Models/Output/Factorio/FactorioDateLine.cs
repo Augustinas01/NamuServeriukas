@@ -1,7 +1,7 @@
 ﻿
-using BusinessLayer.Enumerators.Factorio;
+using Enums.Enumerators.Factorio;
 
-namespace BusinessLayer.Models.Output.Factorio
+namespace Enums.Models.Output.Factorio
 {
     public class FactorioDateLine
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace BusinessLayer.Enumerators
+namespace Enums.Enumerators
 {
     public class SessionEnum
     {

@@ -1,5 +1,5 @@
 ﻿
-using BusinessLayer.Enumerators;
+using Enums.Enumerators;
 using DataAccessLayer.Dapper.Database.Schemas.Tables.Factorio;
 
 namespace DataAccessLayer.Dapper.Database.Schemas

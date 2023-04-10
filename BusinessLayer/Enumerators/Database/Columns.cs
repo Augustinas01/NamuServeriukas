@@ -1,5 +1,5 @@
 ﻿
-namespace BusinessLayer.Enumerators.Database
+namespace Enums.Enumerators.Database
 {
     public class Columns
     {

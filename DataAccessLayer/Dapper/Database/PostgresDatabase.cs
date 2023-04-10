@@ -1,6 +1,6 @@
 ﻿
 
-using BusinessLayer.Enumerators;
+using Enums.Enumerators;
 using DataAccessLayer.Dapper.Database.Schemas;
 
 namespace DataAccessLayer.Dapper.Database

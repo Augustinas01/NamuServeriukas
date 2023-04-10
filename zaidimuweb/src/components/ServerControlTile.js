@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 
 
-function ServerControlTile({ name, state }) {
+function ServerControlTile({ name, state, serviceId }) {
     let [tileData, setTileData] = useState({
+        serviceId: serviceId,
         name: name,
         state: state,
         online: state == 'online' ? true : false,
@@ -21,7 +22,7 @@ function ServerControlTile({ name, state }) {
     useEffect(() => {
 
         const intervalId = setInterval(() => {
-            fetch(settings.API.FACTORIO + '/full-info')
+            fetch(settings.API.SERVICE + '/info/' + serviceId)
                 .then((response) => response.json())
                 .then(data => {
                     setTileData({
@@ -33,7 +34,16 @@ function ServerControlTile({ name, state }) {
                         playerList: data.playerList
                     });
                 })
-                .catch(e => console.error(e));
+                .catch(e => {
+                    setTileData({
+                        ...tileData,
+                        state: "offline",
+                        online: false,
+                        requested: false,
+                        startTime: null,
+                        playerList: []
+                    })
+                });
         }, intervalMS);
         changeServerButtonAppearance(tileData);
 
@@ -105,7 +115,7 @@ function CardContent({ tileData, setShowPlayers, showPlayers, rotation, setRotat
                                     {tileData.playerList.map((player) => (
                                         <tr key={player.name}>
                                             <td>{player.name}</td>
-                                            <td>{new Date(player.joinTime).toLocaleTimeString('lt-lt')}</td>
+                                            <td>{new Date(player.joinTimestamp).toLocaleTimeString('lt-lt')}</td>
                                         </tr>
                                     )) }
                                 </tbody>
@@ -134,9 +144,9 @@ function CardButton({ tileData, setTileData }) {
         document.getElementById("serverBtn").classList.add("is-loading");
 
         if (tileData.online) {
-            stop();
+            stop(tileData.serviceId);
         } else {
-            start();
+            start(tileData.serviceId);
         }
         changeServerButtonAppearance(tileData);
     }
@@ -153,8 +163,8 @@ function CardButton({ tileData, setTileData }) {
 }
 
 
-function start() {
-    fetch(settings.API.FACTORIO + '/start')
+function start(serviceId) {
+    fetch(settings.API.SERVICE + '/start/' + serviceId)
         .then((response) => {
             if (!response.ok) {
                 alert('error');
@@ -164,8 +174,8 @@ function start() {
         .catch(e => console.log(e));
 };
 
-function stop() {
-    fetch(settings.API.FACTORIO + '/stop')
+function stop(serviceId) {
+    fetch(settings.API.SERVICE + '/stop/' + serviceId)
         .then((response) => {
             if (!response.ok) {
                 alert('error');
