@@ -5,9 +5,9 @@ namespace PostgresDatabase.Repositories
 {
     internal class UnitOfWork : IUnitOfWork
     {
-        private readonly FactorioDbContext _factorioContext;
+        private readonly PostgresDbContext _factorioContext;
         
-        public UnitOfWork(FactorioDbContext factorioContext) => _factorioContext = factorioContext;
+        public UnitOfWork(PostgresDbContext factorioContext) => _factorioContext = factorioContext;
         public Task<int> GetCountAsync()
         {
             throw new NotImplementedException();

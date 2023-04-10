@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Enums\Enums.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Generic\Session\Presentation\" />
+  </ItemGroup>
+
 </Project>

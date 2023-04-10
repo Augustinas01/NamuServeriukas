@@ -1,13 +1,16 @@
 ﻿
 using Domain.Entities.Generic;
 using Domain.Repositories.General;
+using Domain.Repositories.Generic;
 
 namespace Domain.Repositories
 {
     public interface IRepositoryManager
     {
-        IFactorioRepository FactorioRepository { get; }
-        IGameSessionRepository<GameSession, Player> GameSessionRepository { get; }
+        IServiceSessionRepository ServiceSessionRepository { get; }
+        IConfigurationRepository ConfigurationRepository { get; }
+        IPlayerRepository PlayerRepository { get; }
+        IServiceRepository ServiceRepository { get; }
         IUnitOfWork UnitOfWork { get; }
     }
 }

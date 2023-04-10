@@ -5,8 +5,8 @@ using PostgresDatabase.Repositories;
 using PostgresDatabase.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Services.Abstractions.Facades;
 using ExternalProcesses;
+using Services.Abstractions.Generic;
 
 var builder = WebApplication.CreateBuilder();
 #if DEBUG
@@ -14,23 +14,19 @@ var conString = builder.Configuration.GetConnectionString("MyPostgres");
 #else
 var conString = builder.Configuration.GetConnectionString("Postgres");
 #endif
-Console.WriteLine(conString);
 
 // Add services to the container
 builder.Services.AddHostedService<ExternalProcessManager>();
-builder.Services.AddTransient<IProcessService, ProcessService>();
+builder.Services.AddTransient<IProcessHandler, ProcessService>();
 
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
-builder.Services.AddDbContext<FactorioDbContext>(builder =>
+builder.Services.AddDbContext<PostgresDbContext>(builder =>
 {
-    //var conString = new ConfigurationBuilder()
-    //                                    .AddJsonFile("appsettings.json")
-    //                                    .Build()
-    //                                    .GetConnectionString("Postgres");
-    builder.UseNpgsql(conString, x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "efcore"));
-
+    builder
+    .UseNpgsql(conString, x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "efcore"))
+    .UseSnakeCaseNamingConvention();
 });
 
 

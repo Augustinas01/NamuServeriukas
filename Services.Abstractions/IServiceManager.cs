@@ -5,6 +5,7 @@ namespace Services.Abstractions
 {
     public interface IServiceManager 
     {
-        IFactorioService FactorioService { get; }
+        IExternalServicesManager ExternalServicesManager { get; }
+        IExternalServicesLibrary ExternalServicesLibrary { get; }
     }
 }

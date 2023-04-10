@@ -1,11 +1,14 @@
-﻿using Enums;
-using Microsoft.Extensions.Hosting;
+﻿using Contracts;
+using Contracts.Configuration.Infrastructure;
+using Contracts.Generic.Service;
 
 namespace Services.Abstractions.Generic
 {
     public interface IProcessHandler 
     {
-        Task StartExternalProcess(ProcessEnum.Type processType);
-        Task<int> StopExternalProcess(ProcessEnum.Type processType);
+        Task StartExternalProcess(ServiceLaunchDto processType);
+        void StopExternalProcess(int serviceId);
+        List<int> GetRunningProcessesIds();
+        ServiceModel GetServiceModel(int id);
     }
 }

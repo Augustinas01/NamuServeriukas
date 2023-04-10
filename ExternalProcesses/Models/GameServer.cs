@@ -1,40 +1,74 @@
 ﻿
-using Enums;
+using Contracts;
+using Contracts.Configuration.Infrastructure;
+using Contracts.Generic.Service;
+using Contracts.Generic.User;
 using ExternalProcesses.Handlers;
-using ExternalProcesses.Handlers.EventArgsModels;
 using System.Diagnostics;
 
 namespace ExternalProcesses.Models
 {
     public class GameServer : Process
     {
-        public ProcessEnum.Type Type { get; set; }
-        private GameModel Model { get; set; } = new();
-        private ProcessOutputHandler ProcessOutputHandler { get; set; }
+        public ServiceModel Model { get; set; } = new();
+        public ProcessOutputHandler ProcessOutputHandler { get; set; }
 
-        public GameServer() 
+        public event EventHandler<ExternalServiceArgs> PlayerAction = delegate { };
+
+        public GameServer(ServiceLaunchDto launchParams) 
         {
+            base.StartInfo = new()
+            {
+                FileName = $"{launchParams.PathToExe}",
+                Arguments = $"{launchParams.ExeArgs}",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            };
+
+            Model.PlayerList = new();
+            Model.Id = launchParams.Id;
             ProcessOutputHandler = new();
             base.OutputDataReceived += ProcessOutputHandler.ConsumeProcessOutput;
-            ProcessOutputHandler.ServerStateChanged += o_ServerDidAction;
-            ProcessOutputHandler.PlayerAction += o_PlayerDidAction;
+            ProcessOutputHandler.ServerStateChanged += OnServerAction;
+            
         }
 
-        public void SetServerId(int id)
+        private void OnServerAction(object? sender, ExternalServiceArgs args)
         {
-            Model.Id = id;
+            if (args != null)
+            {
+                switch (args.ServiceAction)
+                {
+                    case Enums.ServiceEnum.Action.ServiceStateChanged:
+                        Model.State = args.State ?? "warming-up";
+                        if(args.State != null && args.State.Equals("online") && Model.StartTime == DateTime.MinValue)
+                        {
+                            Model.StartTime = args.Time;
+                        }
+                        break;
+                    case Enums.ServiceEnum.Action.ServiceSpecific:
+                        switch (args.Action)
+                        {
+                            case "join":
+                                var player = new PlayerDto() 
+                                { 
+                                    Name = args.PlayerName,
+                                    JoinTimestamp = args.Time
+                                };
+                                Model.PlayerList?.Add(player);
+                                break;
+                            case "leave":
+                                var p = Model.PlayerList?.Single(player => player.Name == args.PlayerName);
+                                Model.PlayerList?.Remove(p);
+                                break;
+
+                        }
+                        PlayerAction?.Invoke(this, args);
+                        break;
+                }
+            }
+            
         }
-        public int GetServerId() => Model.Id;
-
-        private void o_ServerDidAction(object sender, ServerStateChangedEventArgs e)
-        {
-
-        }
-
-        private void o_PlayerDidAction(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }

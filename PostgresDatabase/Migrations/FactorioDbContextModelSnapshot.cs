@@ -10,7 +10,7 @@ using PostgresDatabase.Contexts;
 
 namespace PostgresDatabase.Migrations
 {
-    [DbContext(typeof(FactorioDbContext))]
+    [DbContext(typeof(PostgresDbContext))]
     partial class FactorioDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -22,88 +22,158 @@ namespace PostgresDatabase.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Generic.GameSession", b =>
+            modelBuilder.Entity("Domain.Entities.General.Configuration", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("text")
+                        .HasColumnName("key");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("value");
+
+                    b.HasKey("Key")
+                        .HasName("pk_configuration");
+
+                    b.ToTable("configuration", "config");
+                });
+
+            modelBuilder.Entity("Domain.Entities.General.Service", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("StartTimestamp")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
 
-                    b.Property<DateTime?>("StopTimestamp")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("ExeArgs")
+                        .HasColumnType("text")
+                        .HasColumnName("exe_args");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PathToExe")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("path_to_exe");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("type");
 
                     b.HasKey("Id")
-                        .HasName("session_pkey");
+                        .HasName("service_pkey");
 
-                    b.ToTable("session", "main");
-
-                    b.HasDiscriminator<string>("Type").HasValue("session_base");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("service", "config");
                 });
 
             modelBuilder.Entity("Domain.Entities.Generic.Player", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("JoinTimestamp")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("join_timestamp");
 
                     b.Property<DateTime?>("LeaveTimestamp")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("leave_timestamp");
 
-                    b.Property<int?>("SessionId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("session_id");
 
                     b.HasKey("Id")
                         .HasName("player_pkey");
 
-                    b.HasIndex("SessionId");
+                    b.HasIndex("SessionId")
+                        .HasDatabaseName("ix_player_session_id");
 
                     b.ToTable("player", "main");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Player");
-
-                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Factorio.FactorioSession", b =>
+            modelBuilder.Entity("Domain.Entities.Generic.ServiceSession", b =>
                 {
-                    b.HasBaseType("Domain.Entities.Generic.GameSession");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.HasDiscriminator().HasValue("factorio");
-                });
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-            modelBuilder.Entity("Domain.Entities.Factorio.FactorioPlayer", b =>
-                {
-                    b.HasBaseType("Domain.Entities.Generic.Player");
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("integer")
+                        .HasColumnName("service_id");
 
-                    b.HasDiscriminator().HasValue("FactorioPlayer");
+                    b.Property<DateTime>("StartTimestamp")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_timestamp");
+
+                    b.Property<DateTime?>("StopTimestamp")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("stop_timestamp");
+
+                    b.HasKey("Id")
+                        .HasName("session_pkey");
+
+                    b.HasIndex("ServiceId")
+                        .HasDatabaseName("ix_session_service_id");
+
+                    b.ToTable("session", "main");
                 });
 
             modelBuilder.Entity("Domain.Entities.Generic.Player", b =>
                 {
-                    b.HasOne("Domain.Entities.Generic.GameSession", "Session")
-                        .WithMany()
-                        .HasForeignKey("SessionId");
+                    b.HasOne("Domain.Entities.Generic.ServiceSession", "Session")
+                        .WithMany("Players")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_player_sessions_session_id");
 
                     b.Navigation("Session");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Generic.ServiceSession", b =>
+                {
+                    b.HasOne("Domain.Entities.General.Service", "Service")
+                        .WithMany("Sessions")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_session_service_service_id");
+
+                    b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Domain.Entities.General.Service", b =>
+                {
+                    b.Navigation("Sessions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Generic.ServiceSession", b =>
+                {
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

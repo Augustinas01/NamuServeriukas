@@ -1,34 +1,45 @@
-﻿using Enums;
+﻿using Contracts;
+using Contracts.Configuration.Infrastructure;
+using Contracts.Generic.Service;
+using Enums;
 using ExternalProcesses;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Services.Abstractions.Facades;
-
+using Services.Abstractions.Generic;
 
 namespace Services
 {
-    public class ProcessService : IProcessService
+    public class ProcessService : IProcessHandler
     {
         private readonly ExternalProcessManager _processManager;
+
         public ProcessService(IServiceProvider serviceProvider)
         {
-            _processManager = serviceProvider.GetServices<IHostedService>().OfType<ExternalProcessManager>().Single(); ;
+            _processManager = serviceProvider.GetServices<IHostedService>().OfType<ExternalProcessManager>().Single();
         }
-        public Task StartProcess(ProcessEnum.Type processType)
+
+
+        public List<int> GetRunningProcessesIds()
         {
-            _processManager.StartExternalProcess(processType);
+            return _processManager.GetRunningProcessesIds();
+        }
+
+
+        public Task StartExternalProcess(ServiceLaunchDto launchParams)
+        {
+            _processManager.StartExternalProcess(launchParams);
             return Task.CompletedTask;
         }
 
-        public async Task<int> StopProcess(ProcessEnum.Type processType)
+        public void StopExternalProcess(int serviceId)
         {
-            var val = await _processManager.StopExternalProcess(processType);
-            return val;
+            _processManager.StopExternalProcess(serviceId);
         }
 
-        public void SetServerId(ProcessEnum.Type t, int id)
+        public ServiceModel GetServiceModel(int serviceId)
         {
-            _processManager.SetGameId(t, id);
+            return _processManager.GetServiceModel(serviceId);
         }
+
     }
 }

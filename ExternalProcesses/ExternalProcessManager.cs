@@ -1,13 +1,28 @@
-﻿using Enums;
+﻿using Contracts;
+using Contracts.Configuration.Infrastructure;
+using Contracts.Generic.Service;
+using Contracts.Generic.User;
+using Domain.Repositories;
+using Enums;
 using ExternalProcesses.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Services.Abstractions.Facades;
 using System.Diagnostics;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ExternalProcesses
 {
     public class ExternalProcessManager : IProcessManager
     {
-        private readonly Dictionary<ProcessEnum.Type, GameServer> _processes = new();
+
+        private readonly Dictionary<int, GameServer> _processes = new();
+        private readonly IServiceProvider _serviceProvider;
+
+        public ExternalProcessManager(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
 
         #region HostedService start/down
         public Task StartAsync(CancellationToken cancellationToken)
@@ -21,74 +36,77 @@ namespace ExternalProcesses
         }
         #endregion
 
-        public Task StartExternalProcess(ProcessEnum.Type processType)
+        public Task StartExternalProcess(ServiceLaunchDto ServiceLaunchParams)
         {
-            if (_processes.Values.Any(p => p.Type == processType))
+            if (_processes.Values.Any(p => p.Id == ServiceLaunchParams.Id))
             {
                 throw new InvalidOperationException("A process is already running.");
             }
 
-            switch (processType)
+            if (ServiceLaunchParams.PathToExe != null && ServiceLaunchParams.ExeArgs != null)
             {
-                case ProcessEnum.Type.Factorio:
-                    try
+
+                var prc = new GameServer(ServiceLaunchParams);
+                prc.Start();
+                prc.BeginOutputReadLine();
+                prc.PlayerAction += OnServerAction;
+
+                _processes.Add(ServiceLaunchParams.Id, prc);
+
+            }
+            return Task.CompletedTask;
+        }
+
+        public void StopExternalProcess(int serviceId)
+        {
+            _processes[serviceId].Kill();
+            _processes[serviceId].Dispose();
+            _processes.Remove(serviceId);
+
+        }
+
+        public ServiceModel GetServiceModel(int serviceId)
+        {
+            return _processes[serviceId].Model;
+        }
+
+
+        public List<int> GetRunningProcessesIds()
+        {
+            return _processes.Keys.ToList();
+        }
+
+        private async void OnServerAction(object? sender, ExternalServiceArgs e)
+        {
+            switch (e.Action)
+            {
+                case "join": 
+                    using(IServiceScope scope = _serviceProvider.CreateScope())
                     {
-                       StartExternalProcess
-                            ("D:\\grajokas\\Factorio.v1.1.76\\Factorio.v1.1.76\\Factorio.v1.1.76\\bin\\x64\\factorio.exe",
-                           "--start-server-load-latest --server-settings C:\\server\\games\\Factorio\\data\\server-settings.json");
-                    }
-                    catch
-                    {
-                        throw;
+                        IRepositoryManager manager = scope.ServiceProvider.GetRequiredService<IRepositoryManager>();
+                        var lastSession = await manager.ServiceSessionRepository.GetLastSessionByServiceIdAsync(1);
+                        manager.PlayerRepository.InsertPlayer(new PlayerDto()
+                        {
+                            Name = e.PlayerName,
+                            JoinTimestamp = e.Time,
+                            SessionId = lastSession.Id
+                        });
+                        manager.UnitOfWork.SaveChangesAsync().Wait();
                     }
                     break;
-                default:
-                    throw new ArgumentException("Unknown process type");
+                case "leave":
+                    using (IServiceScope scope = _serviceProvider.CreateScope())
+                    {
+                        IRepositoryManager manager = scope.ServiceProvider.GetRequiredService<IRepositoryManager>();
+                        var lastSession = await manager.ServiceSessionRepository.GetLastSessionByServiceIdAsync(1);
+                        var player = manager.PlayerRepository.GetAllPLayersBySessionId(lastSession.Id).Result.Single( p =>  p.Name != null && p.Name.Equals(e.PlayerName));
+                        player.LeaveTimestamp = e.Time;
+                        manager.PlayerRepository.UpdatePlayer(player);
+                        manager.UnitOfWork.SaveChangesAsync().Wait();
+                    }
+                    break;
+                
             }
-
-
-            return Task.CompletedTask;
         }
-        public Task StartExternalProcess(string filePath, string arguments)
-        {
-
-            ProcessStartInfo startInfo = new()
-            {
-                FileName = $"{filePath}",
-                Arguments = $"{arguments}",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = false
-            };
-
-            var prc = new GameServer();
-            prc.StartInfo = startInfo;
-            prc.Start();
-            prc.BeginOutputReadLine();
-
-            _processes.Add(ProcessEnum.Type.Factorio, prc);
-
-            return Task.CompletedTask;
-        }
-
-        public async Task<int> StopExternalProcess(ProcessEnum.Type prcType)
-        {
-            var prcId = _processes[prcType].GetServerId();
-            await _processes[prcType].WaitForExitAsync();
-
-            _processes[prcType].Kill();
-            _processes[prcType].Dispose();
-            _processes.Remove(prcType);
-
-            return prcId;
-        }
-
-        public void SetGameId(ProcessEnum.Type prcType, int id)
-        {
-            _processes[prcType].SetServerId(id);
-        }
-
-
-
     }
 }
