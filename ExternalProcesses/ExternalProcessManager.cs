@@ -2,13 +2,13 @@
 using Contracts.Configuration.Infrastructure;
 using Contracts.Generic.Service;
 using Contracts.Generic.User;
+using DeviceNetworkManager;
 using Domain.Repositories;
 using Enums;
 using ExternalProcesses.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Abstractions.Facades;
-using System.Diagnostics;
-using static System.Formats.Asn1.AsnWriter;
+
 
 namespace ExternalProcesses
 {
@@ -17,21 +17,27 @@ namespace ExternalProcesses
 
         private readonly Dictionary<int, GameServer> _processes = new();
         private readonly IServiceProvider _serviceProvider;
+        private readonly UPnPManager _unPManager;
 
-        public ExternalProcessManager(IServiceProvider serviceProvider)
+        public ExternalProcessManager(IServiceProvider serviceProvider, UPnPManager uPnPManager)
         {
             _serviceProvider = serviceProvider;
+            _unPManager = uPnPManager;
         }
 
 
         #region HostedService start/down
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _unPManager.StartNetworkDeviceDiscovery();
+            _ =_unPManager.OpenPort((int)NetworkEnum.Protocol.Udp, 34197, "Factorio");
+            //UpnpMappingList.Add(new Mapping(Protocol.Udp, 34197, 1337, int.MaxValue, "FactorioTest"));
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
+            _ = _unPManager.ClosePort(34197);
             return Task.CompletedTask;
         }
         #endregion
@@ -108,5 +114,8 @@ namespace ExternalProcesses
                 
             }
         }
+
+
+
     }
 }

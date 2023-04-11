@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using ExternalProcesses;
 using Services.Abstractions.Generic;
+using DeviceNetworkManager;
 
 var builder = WebApplication.CreateBuilder();
 #if DEBUG
@@ -16,6 +17,8 @@ var conString = builder.Configuration.GetConnectionString("Postgres");
 #endif
 
 // Add services to the container
+builder.Services.AddSingleton<UPnPManager>();
+
 builder.Services.AddHostedService<ExternalProcessManager>();
 builder.Services.AddTransient<IProcessHandler, ProcessService>();
 
@@ -34,9 +37,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
 var app = builder.Build();
+
+var lifetime = app.Services.GetService<IHostApplicationLifetime>();
+lifetime?.ApplicationStopping.Register(() =>
+{
+    app.Services.GetService<ExternalProcessManager>()?.StopAsync(default);
+});
 
 app.UseCors(builder => builder
 .AllowAnyHeader()

@@ -25,11 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostgresDatabase", "Postgre
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Process", "Process", "{37D6B70C-061D-47E3-9C96-C93922C74533}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums", "Enums\Enums.csproj", "{53C4CA0F-8DD3-4550-91CF-7462966AB36D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums", "Enums\Enums.csproj", "{53C4CA0F-8DD3-4550-91CF-7462966AB36D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalProcesses", "ExternalProcesses\ExternalProcesses.csproj", "{8F0807C4-2C44-493E-9FD6-C5520BF8273B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalProcesses", "ExternalProcesses\ExternalProcesses.csproj", "{8F0807C4-2C44-493E-9FD6-C5520BF8273B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{CCC7B97A-754D-46B5-BA94-D8AC081612AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceNetworkManager", "DeviceNetworkManager\DeviceNetworkManager.csproj", "{C28F8A84-A78A-4F1F-8213-D3DA805BCF7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{8F0807C4-2C44-493E-9FD6-C5520BF8273B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F0807C4-2C44-493E-9FD6-C5520BF8273B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F0807C4-2C44-493E-9FD6-C5520BF8273B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C28F8A84-A78A-4F1F-8213-D3DA805BCF7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C28F8A84-A78A-4F1F-8213-D3DA805BCF7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C28F8A84-A78A-4F1F-8213-D3DA805BCF7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C28F8A84-A78A-4F1F-8213-D3DA805BCF7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{37D6B70C-061D-47E3-9C96-C93922C74533} = {9E1460DC-48A8-4487-AE5E-DCA09BCE4E8F}
 		{53C4CA0F-8DD3-4550-91CF-7462966AB36D} = {39817329-4EFB-444E-B277-598D524A9B4D}
 		{8F0807C4-2C44-493E-9FD6-C5520BF8273B} = {37D6B70C-061D-47E3-9C96-C93922C74533}
+		{C28F8A84-A78A-4F1F-8213-D3DA805BCF7E} = {9E1460DC-48A8-4487-AE5E-DCA09BCE4E8F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B972FD11-3639-422B-A9EA-C0BC577A08F6}
