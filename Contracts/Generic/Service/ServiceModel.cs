@@ -6,6 +6,7 @@ namespace Contracts.Generic.Service
     public class ServiceModel
     {
         public int Id { get; set; }
+        public int NetworkPort { get; set; }
         public string? State { get; set; }
         public DateTime StartTime { get; set; }
         public List<PlayerDto>? PlayerList { get; set; }

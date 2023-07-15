@@ -47,7 +47,7 @@ namespace ExternalProcesses.Models
                             Model.StartTime = args.Time;
                         }
                         break;
-                    case Enums.ServiceEnum.Action.ServiceSpecific:
+                    case Enums.ServiceEnum.Action.PlayerAction:
                         switch (args.Action)
                         {
                             case "join":

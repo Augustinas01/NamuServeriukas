@@ -17,5 +17,22 @@
             Join,
             Leave
         }
+
+        public enum Sender
+        {
+            None,
+            Undefined,
+            AppManager,
+            AppManagerStates,
+            CommandLineMultiplayer,
+            GameActionHandler,
+            PlayerData,
+            Scenario,
+            ServerMultiplayerManager,
+            ServerRouter,
+            ServerSynchronizer,
+            UDPSocket
+
+        }
     }
 }

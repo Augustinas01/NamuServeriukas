@@ -18,7 +18,8 @@
         public enum Action
         {
             ServiceStateChanged,
-            ServiceSpecific
+            ServiceSpecific,
+            PlayerAction
         }
         public enum PlayerAction
         {

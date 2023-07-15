@@ -30,14 +30,12 @@ namespace ExternalProcesses
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _unPManager.StartNetworkDeviceDiscovery();
-            _ =_unPManager.OpenPort((int)NetworkEnum.Protocol.Udp, 34197, "Factorio");
-            //UpnpMappingList.Add(new Mapping(Protocol.Udp, 34197, 1337, int.MaxValue, "FactorioTest"));
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _ = _unPManager.ClosePort(34197);
+            _unPManager.ShutDown();
             return Task.CompletedTask;
         }
         #endregion
@@ -67,6 +65,7 @@ namespace ExternalProcesses
         {
             _processes[serviceId].Kill();
             _processes[serviceId].Dispose();
+            //_processes[serviceId].Model;
             _processes.Remove(serviceId);
 
         }

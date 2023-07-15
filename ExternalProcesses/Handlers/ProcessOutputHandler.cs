@@ -26,7 +26,7 @@ namespace ExternalProcesses.Handlers
                 var lineType = DeterminateProcessOutputLineType(args.Data);
                 var outArgs = new ExternalServiceArgs()
                 {
-                    ServiceAction = lineType == FactorioOutputEnum.LineType.FactorioTickInfo ? ServiceEnum.Action.ServiceStateChanged : ServiceEnum.Action.ServiceSpecific
+                    ServiceAction = lineType == FactorioOutputEnum.LineType.FactorioTickInfo ? ServiceEnum.Action.ServiceStateChanged : ServiceEnum.Action.PlayerAction
                 };
 
                 switch (lineType)
