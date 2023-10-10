@@ -1,4 +1,5 @@
-﻿using Contracts.Generic.Session.Infrastructure;
+﻿using Contracts.Generic.Service;
+using Contracts.Generic.Session.Infrastructure;
 using Enums;
 
 namespace Contracts.Configuration.Infrastructure
@@ -11,6 +12,7 @@ namespace Contracts.Configuration.Infrastructure
         public string? Description { get; set; }
         public string? PathToExe { get; set; }
         public string? ExeArgs { get; set; }
+        public List<ServicePort>? PortList { get; set; }
         public List<SessionDto>? SessionsWithoutPlayers { get; set; }
 
     }

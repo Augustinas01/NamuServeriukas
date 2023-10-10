@@ -11,6 +11,7 @@ namespace Contracts.Configuration.Presentation
         public string? Name { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }
+        public int? Port { get; set; }
         public List<ServiceUserDto>? ServiceUserList { get; set; }
         public DateTime StartedDateTimeUtc { get; set; }
         public DateTime StopedDateTimeUtc { get; set; }

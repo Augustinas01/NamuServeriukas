@@ -3,7 +3,6 @@ using Domain.Entities.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-
 namespace PostgresDatabase.Contexts
 {
     public class PostgresDbContext : DbContext
@@ -19,14 +18,14 @@ namespace PostgresDatabase.Contexts
 
         public DbSet<Player> Players { get; set; }
         public DbSet<ServiceSession> Sessions { get; set; }
-#if DEBUG
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("",
-                x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "efcore"))
-                .UseSnakeCaseNamingConvention();
-            //base.OnConfiguring(optionsBuilder);
-        }
+#if DEBUG // More like IF Migratione
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseNpgsql("",
+        //        x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "efcore"))
+        //        .UseSnakeCaseNamingConvention();
+        //    //base.OnConfiguring(optionsBuilder);
+        //}
 #endif
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

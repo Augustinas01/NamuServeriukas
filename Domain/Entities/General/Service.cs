@@ -11,6 +11,7 @@ namespace Domain.Entities.General
         public string? PathToExe { get; set; }
         public string? ExeArgs { get; set; }
 
+        public virtual ICollection<ServiceLocalPort>? LocalPorts { get; set; }
         public virtual ICollection<ServiceSession>? Sessions { get; set; }
    }
 }

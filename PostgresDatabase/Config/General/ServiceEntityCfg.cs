@@ -19,6 +19,11 @@ namespace PostgresDatabase.Config.General
             builder.Property(e => e.PathToExe).IsRequired();
 
             builder
+                .HasMany(e => e.LocalPorts)
+                .WithOne(p => p.Service)
+                .HasForeignKey(s => s.ServiceId);
+
+            builder
                 .HasMany(e => e.Sessions)
                 .WithOne(s => s.Service)
                 .HasForeignKey(s => s.ServiceId);
